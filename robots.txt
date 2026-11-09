@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://minecraft-lang.github.io/pcl-news-portal/sitemap.xml
