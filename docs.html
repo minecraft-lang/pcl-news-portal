@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="zh-CN" data-theme="light">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>使用文档 — PCL CE 自定义主页</title>
+<meta name="description" content="PCL CE 自定义主页的安装、配置、更新、自定义与问题排查文档。">
+<link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="assets/style.css">
+<script>
+  (function () {
+    try {
+      var t = localStorage.getItem('pclnh-theme');
+      if (!t) { t = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'; }
+      document.documentElement.setAttribute('data-theme', t);
+    } catch (e) {}
+  })();
+</script>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="wrap topbar-inner">
+    <a class="brand" href="index.html">
+      <span class="brand-mark">
+        <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="16" rx="3"/><path d="M7 9h10M7 13h7"/>
+        </svg>
+      </span>
+      PCL CE 自定义主页
+      <small>pcl-news.com</small>
+    </a>
+    <nav class="nav-links">
+      <a href="index.html">首页</a>
+      <a href="docs.html" class="active">使用文档</a>
+      <a href="downloads/PCL-Homepage-Setup-1.0.0.exe" download>下载</a>
+    </nav>
+    <button class="icon-btn" data-theme-toggle type="button" title="切换主题">
+      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M19.1 4.9l-1.4 1.4M6.3 17.7l-1.4 1.4"/>
+      </svg>
+      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/>
+      </svg>
+    </button>
+  </div>
+</header>
+
+<div class="wrap doc-layout">
+
+  <aside class="sidebar">
+    <div class="group">
+      <div class="group-title">开始</div>
+      <a href="#intro">概览</a>
+      <a href="#install">安装</a>
+      <a href="#pages">页面构成</a>
+      <a href="#files">文件说明</a>
+    </div>
+    <div class="group">
+      <div class="group-title">保持最新</div>
+      <a href="#refresh">更新方式</a>
+      <a href="#args">命令行参数</a>
+      <a href="#sync">双位置同步</a>
+    </div>
+    <div class="group">
+      <div class="group-title">自定义</div>
+      <a href="#custom">改配色</a>
+      <a href="#i18n">改标题</a>
+      <a href="#xaml">XAML 规范</a>
+    </div>
+    <div class="group">
+      <div class="group-title">参考</div>
+      <a href="#data">数据源</a>
+      <a href="#faq">问题排查</a>
+      <a href="#uninstall">卸载与回退</a>
+    </div>
+  </aside>
+
+  <article class="doc-body">
+    <h1>使用文档</h1>
+    <p style="color:var(--text-dim);margin-top:0;">从安装到自定义的完整说明。全文约 6 分钟可读完。</p>
+
+    <h2 id="intro">概览</h2>
+    <p>本项目把 Minecraft 官方资讯渲染成 PCL2 / PCL CE 启动器可以直接加载的主页片段。核心是一个文件：<code>Custom.xaml</code>。它由本地脚本 <code>gen_pcl_homepage.py</code> 抓取官方接口后生成；启动器加载它时不发任何网络请求，联网只发生在脚本抓取数据那一步。</p>
+    <div class="callout">
+      <b>依赖说明：</b>运行时零依赖——PCL 侧纯静态、不联网，不加载任何第三方库或组件；但生成与刷新数据需要本机安装 <b>Python 3</b>（脚本只用标准库，无需 <code>pip install</code> 任何东西）。
+    </div>
+    <div class="callout">
+      <b>关键认知：</b>Custom.xaml 不是完整 XAML 文档，而是内嵌片段，没有 XML 声明、没有根元素、没有命名空间前缀，由启动器自动包容器。
+    </div>
+
+    <h2 id="install">安装</h2>
+    <ol>
+      <li>从<a href="index.html#download">首页下载</a>取得 <code>PCL-Homepage-Setup-1.0.0.exe</code>。</li>
+      <li>双击运行。第一屏选择安装语言（简体中文 / English）。</li>
+      <li>选择"为所有用户安装"或"仅为我安装"。前者需要管理员权限，快捷方式写入公共目录。</li>
+      <li>确认安装路径，默认 <code>D:\pcl主页</code>，可自行修改。</li>
+      <li>完成后默认勾选"打开项目文件夹"，点完成即跳到安装目录。</li>
+    </ol>
+    <div class="code">
+      <button class="copy-btn" type="button">复制</button>
+      <pre><span class="cm">; 安装后目录结构</span>
+D:\pcl主页\
+  ├─ Custom.xaml           <span class="cm"># 启动器加载的主页片段</span>
+  ├─ gen_pcl_homepage.py   <span class="cm"># 抓取并生成 XAML 的脚本</span>
+  ├─ README.md             <span class="cm"># 项目说明</span>
+  └─ 更新数据.bat           <span class="cm"># 一键刷新入口</span></pre>
+    </div>
+    <p>接着在 PCL 中打开 <b>设置 → 个性化 → 主页</b>，把主页文件指向该目录下的 <code>Custom.xaml</code>。部分版本需在"联网更新"里填写本地路径或直链，按界面提示操作即可。</p>
+
+    <h2 id="pages">页面构成</h2>
+    <p>主页从上到下共七个区块，顺序固定，都是独立卡片：</p>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:180px">区块</th><th>说明</th></tr></thead>
+        <tbody>
+          <tr><td>顶部提示条</td><td>展示数据更新时间，并提供"刷新主页"按钮</td></tr>
+          <tr><td>版本速览</td><td>正式版与最新快照双栏，含版本号与发布日期</td></tr>
+          <tr><td>最新新闻</td><td>官方新闻列表，默认 8 条，点击标题打开网页</td></tr>
+          <tr><td>正式版更新日志</td><td>最近 6 条正式版补丁摘要</td></tr>
+          <tr><td>快照更新日志</td><td>最近 8 条快照摘要，默认折叠</td></tr>
+          <tr><td>快捷入口</td><td>5 个按钮：新闻首页、中文 Wiki、下载页等</td></tr>
+          <tr><td>关于本主页</td><td>数据来源与生成方式说明，默认折叠</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="files">文件说明</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:200px">文件</th><th style="width:90px">大小</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>Custom.xaml</code></td><td>约 11 KB</td><td>生成产物，启动器实际加载的主页片段</td></tr>
+          <tr><td><code>gen_pcl_homepage.py</code></td><td>约 22 KB</td><td>抓取官方数据、拼装 XAML、双位置写入</td></tr>
+          <tr><td><code>README.md</code></td><td>约 12 KB</td><td>项目说明与维护备忘</td></tr>
+          <tr><td><code>更新数据.bat</code></td><td>约 2 KB</td><td>调用 Python 的封装脚本，自动探测解释器</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h2 id="refresh">更新方式</h2>
+    <p>只有一条路径：双击 <code>更新数据.bat</code> 跑一次。脚本会重新抓取官方数据并覆写 <code>Custom.xaml</code>。这一步需要本机有 Python 3（启动器读取主页这一步不需要）。</p>
+
+    <h3>双击 更新数据.bat</h3>
+    <p>双击安装目录里的 <code>更新数据.bat</code>。脚本会先探测可用的 Python 解释器（<code>python</code> 或 <code>py -3</code>），再执行生成逻辑，一次写入工程目录与启动器实际加载目录。窗口出现成功提示后，回到启动器点"刷新主页"。</p>
+    <div class="code">
+      <button class="copy-btn" type="button">复制</button>
+      <pre>双击 更新数据.bat
+<span class="cm">→ 等待窗口提示生成成功</span>
+<span class="cm">→ 启动器主页点「刷新主页」</span></pre>
+    </div>
+    <div class="callout">
+      <b>说明：</b>不做定时任务、不联网拉取已生成的主页——内容何时更新完全由你决定，跑一次即刷新一次。若需要显式指定输出路径或使用离线数据，可直接调用生成器，参数见「命令行参数」。
+    </div>
+
+    <h2 id="args">命令行参数</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:180px">参数</th><th>作用</th></tr></thead>
+        <tbody>
+          <tr><td><code>--out &lt;path&gt;</code></td><td>指定输出文件路径，覆盖默认输出位置</td></tr>
+          <tr><td><code>--translations &lt;json&gt;</code></td><td>传入外部翻译映射文件，用于本地化标题</td></tr>
+          <tr><td><code>--java-only</code></td><td>只抓取 Java 版内容，跳过其他平台条目</td></tr>
+          <tr><td><code>--offline &lt;dir&gt;</code></td><td>从本地目录读取缓存的官方 JSON，不联网</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>离线模式适合网络不稳定时复现问题：先把三个官方 JSON 下载到同一目录，再用 <code>--offline</code> 指向它。</p>
+
+    <h2 id="sync">双位置同步</h2>
+    <p>脚本内维护一份同步目标列表：一次生成会同时写入桌面工程目录与启动器实际加载目录，避免"改了工程、启动器没变"的错位。</p>
+    <div class="code">
+      <button class="copy-btn" type="button">复制</button>
+      <pre>SYNC_TARGETS = [
+    r"D:\pcl ce\PCL\Custom.xaml",
+    r"C:\Users\Administrator\Desktop\pcl主页\Custom.xaml",
+]</pre>
+    </div>
+    <p>如果你的启动器装在别处，改这一处即可；只保留一项也能正常工作。</p>
+
+    <h2 id="custom">改配色</h2>
+    <p>配色不要写死十六进制。用启动器的动态资源引用，换主题或换强调色时主页会自动跟随。</p>
+    <div class="code">
+      <button class="copy-btn" type="button">复制</button>
+      <pre><span class="cm">&lt;!-- 主文字 / 次要灰 / 分隔线 --&gt;</span>
+&lt;SolidColorBrush x:Key="BR1"
+  Color="{DynamicResource ColorBrush1}" /&gt;
+&lt;SolidColorBrush x:Key="BR4"
+  Color="{DynamicResource ColorBrush4}" /&gt;
+&lt;SolidColorBrush x:Key="BR5"
+  Color="{DynamicResource ColorBrush5}" /&gt;</pre>
+    </div>
+
+    <h2 id="i18n">改标题与文案</h2>
+    <p>要替换卡片标题、按钮文字，直接编辑 <code>Custom.xaml</code> 中对应文本即可；批量改名请改脚本里的模板字符串，再重新生成，否则下次刷新会被覆盖。</p>
+    <div class="callout">
+      <b>顺序很重要：</b>先生成、后手工微调可以，但一旦再次运行脚本，手工改动会被新的生成结果覆盖。长期有效的修改应该落在脚本里。
+    </div>
+
+    <h2 id="xaml">XAML 格式规范</h2>
+    <p>生成脚本自带自检，下列任一条不满足都会报错退出：</p>
+    <ul>
+      <li>不允许出现 <code>&lt;?xml</code> 声明——这是片段，不是文档。</li>
+      <li>不允许出现默认命名空间声明（<code>xmlns=</code>）。</li>
+      <li>不允许出现 <code>xmlns:</code> 前缀声明，<code>local</code> 由启动器注入。</li>
+      <li>不允许出现"翻译施工中"字样。</li>
+      <li><code>MyCard</code> 等标签必须成对闭合。</li>
+    </ul>
+    <h3>交互写法</h3>
+    <p>不使用 WPF 的 <code>Click</code>，改用启动器事件：</p>
+    <div class="code">
+      <button class="copy-btn" type="button">复制</button>
+      <pre><span class="cm">&lt;!-- 打开网页 --&gt;</span>
+EventType="打开网页"  EventData="https://www.minecraft.net/en-us/news"
+
+<span class="cm">&lt;!-- 刷新主页 --&gt;</span>
+EventType="刷新主页"
+
+<span class="cm">&lt;!-- 跳启动器内部页：必须是枚举名，不能填 URL --&gt;</span>
+EventType="切换页面"  EventData="Download|DownloadInstall"</pre>
+    </div>
+    <h3>卡片留白</h3>
+    <p><code>MyCard</code> 标题栏浮于内容之上，内容容器必须留出上边距，默认 <code>Margin="12,40,12,14"</code>；字号或缩放更大时调整到 44 或 48。</p>
+
+    <h2 id="data">数据源</h2>
+    <div class="table-wrap">
+      <table>
+        <thead><tr><th style="width:340px">接口</th><th>提供内容</th></tr></thead>
+        <tbody>
+          <tr><td><code>launchermeta.mojang.com/mc/game/<br>version_manifest_v2.json</code></td><td>版本号、发布状态与发布时间</td></tr>
+          <tr><td><code>launchercontent.mojang.com/v2/<br>javaPatchNotes.json</code></td><td>Java 版更新日志</td></tr>
+          <tr><td><code>launchercontent.mojang.com/v2/<br>news.json</code></td><td>官方新闻条目</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p>三个接口均为公开只读，与官方启动器同源。抓取失败时脚本会保留上一版 <code>Custom.xaml</code> 不动，不会写出一份半成品。</p>
+
+    <h2 id="faq">问题排查</h2>
+    <details class="faq" open>
+      <summary>主页一片空白，或加载报错</summary>
+      <div class="faq-body">
+        <p>先确认 <code>Custom.xaml</code> 没有被编辑器加上 XML 声明或命名空间。用记事本打开，第一行应该是 <code>&lt;local:MyHint</code> 或 <code>&lt;local:MyCard</code> 之类，而不是 <code>&lt;?xml version="1.0"&gt;</code>。</p>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>文字压在卡片标题上</summary>
+      <div class="faq-body">
+        <p>给内容容器补上边距：<code>Margin="12,40,12,14"</code>。若启动器字号偏大，改成 <code>44</code> 或 <code>48</code>。</p>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>刷新了但内容没变化</summary>
+      <div class="faq-body">
+        <p>按顺序检查：① <code>更新数据.bat</code> 窗口是否提示成功（报错多为没装 Python 3 或未加入 PATH）；② 输出的 <code>Custom.xaml</code> 修改时间是否是刚刚；③ 启动器里是否点了"刷新主页"；④ 是否存在两个 <code>Custom.xaml</code>（见双位置同步）。</p>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>脚本提示找不到 Python</summary>
+      <div class="faq-body">
+        <p>安装 Python 3（官网版或商店版均可），勾选"Add Python to PATH"。脚本会依次尝试 <code>python</code> 与 <code>py -3</code>，两者都不可用时才会失败。</p>
+      </div>
+    </details>
+    <details class="faq">
+      <summary>网络原因导致抓取失败</summary>
+      <div class="faq-body">
+        <p>用 <code>--offline &lt;dir&gt;</code> 指向本地缓存目录再生成；或等网络恢复后重跑。脚本不会把失败结果写进 <code>Custom.xaml</code>。</p>
+      </div>
+    </details>
+
+    <h2 id="uninstall">卸载与回退</h2>
+    <p>在 Windows"设置 → 应用"里找到 <b>PCL CE 自定义主页</b> 卸载，或运行安装目录下的 <code>unins000.exe</code>。</p>
+    <div class="callout">
+      <b>卸载不会清空目录：</b>只移除安装程序放入的四个文件，你后来添加的截图、笔记、备份都会保留。若想彻底清理，卸载后手动删除剩余目录即可。
+    </div>
+    <p>想回退到启动器原版主页：在 PCL 设置里把主页恢复为官方/默认，或把"使用自定义主页"选项关闭，重启启动器即可，与卸载无关。</p>
+
+
+  </article>
+</div>
+
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div>
+        <div style="font-weight:700;color:var(--text);margin-bottom:6px;">PCL CE 自定义主页</div>
+        <div>使用文档 · pcl-news.com</div>
+      </div>
+      <div class="foot-links">
+        <a href="index.html">首页</a>
+        <a href="index.html#download">下载</a>
+        <a href="docs.html#faq">问题排查</a>
+      </div>
+    </div>
+    <div class="foot-note">
+      本站为第三方爱好者项目页面，与 Mojang Studios / Microsoft 无隶属关系；Minecraft 及相关商标归其各自权利人所有。
+    </div>
+  </div>
+</footer>
+
+<script src="assets/app.js"></script>
+</body>
+</html>
