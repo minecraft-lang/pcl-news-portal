@@ -3,9 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PCL CE 自定义主页 — 官方新闻、版本号、一键刷新</title>
-<meta name="description" content="给 PCL2 / PCL CE 启动器加一个真正的 Minecraft 官方新闻主页：版本速览、官方新闻、更新日志，单文件 Custom.xaml，运行期零依赖（刷新数据需 Python 3），一键刷新无需重启。">
+<title>PCL CE / PCL2 自定义主页 — 我的世界启动器官方新闻首页</title>
+<meta name="description" content="给 PCL2 / PCL CE（PCLCE）这类我的世界（Minecraft）启动器加一个真正的官方新闻主页：版本速览、Mojang 官方新闻、更新日志，单文件 Custom.xaml，运行期零依赖（刷新数据需 Python 3），一键刷新无需重启，不用改启动器源码。">
 <meta name="msvalidate.01" content="BDBBD12C17CD22667C7ED65617A39E9D" />
+<link rel="canonical" href="https://minecraft-lang.github.io/pcl-news-portal/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="PCL CE 自定义主页">
+<meta property="og:title" content="PCL CE / PCL2 自定义主页 — 我的世界启动器官方新闻首页">
+<meta property="og:description" content="给 PCL2、PCL CE（PCLCE）等我的世界启动器用的自定义主页：版本速览、Mojang 官方新闻、更新日志，单文件 Custom.xaml，一键刷新无需重启。">
+<meta property="og:url" content="https://minecraft-lang.github.io/pcl-news-portal/">
+<meta name="keywords" content="PCL2, PCL CE, PCLCE, PCL 主页, PCL2 自定义主页, 我的世界启动器, Minecraft 启动器主页, Custom.xaml">
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"SoftwareApplication","name":"PCL CE 自定义主页","alternateName":["PCL2 自定义主页","PCLCE 主页","PCL 主页","我的世界 PCL2 主页"],"description":"给 PCL2 / PCL CE 等我的世界启动器使用的自定义主页方案，生成单文件 Custom.xaml，内含版本速览、Mojang 官方新闻与更新日志，一键刷新无需重启。","applicationCategory":"UtilitiesApplication","operatingSystem":"Windows 10, Windows 11","softwareVersion":"1.0.0","inLanguage":"zh-CN","url":"https://minecraft-lang.github.io/pcl-news-portal/","downloadUrl":"https://minecraft-lang.github.io/pcl-news-portal/downloads/PCL-Homepage-Setup-1.0.0.exe","offers":{"@type":"Offer","price":"0","priceCurrency":"CNY"}}
+</script>
 <link rel="icon" href="assets/favicon.svg" type="image/svg+xml">
 <link rel="stylesheet" href="assets/style.css">
 <script>
@@ -62,7 +72,7 @@
         </div>
         <h1>把你的启动器主页<br>换成一份 <span class="grad">真正的官方资讯</span></h1>
         <p class="lede">
-          版本号、快照进度、Mojang 官方新闻与更新日志，全部直连官方接口抓取后渲染成启动器内嵌 XAML。
+          这是给 PCL2、PCL CE（PCLCE）等我的世界启动器准备的自定义主页方案。版本号、快照进度、Mojang 官方新闻与更新日志，全部直连官方接口抓取后渲染成启动器内嵌 XAML。
           不翻译占位、不显示"施工中"，一键刷新即可更新，不用重启启动器。
         </p>
         <div class="hero-actions">
@@ -362,6 +372,12 @@
         <div class="eyebrow">FAQ</div>
         <h2>常见问题</h2>
       </div>
+      <details class="faq">
+        <summary>PCL 主页、PCL2 我的世界启动器主页，说的是同一个东西吗？</summary>
+        <div class="faq-body">
+          <p>是同一套方案。PCL2 与 PCL CE（PCLCE）都是读取启动器目录下的 <code>Custom.xaml</code> 作为自定义主页，本项目生成的就是这个文件，所以 PCL 主页、PCL2 主页、PCLCE 主页用的是同一份输出，装一次即可。两者差异只在配色与个别控件上，生成器会跟随启动器当前主题输出。</p>
+        </div>
+      </details>
       <details class="faq" open>
         <summary>主页文字和卡片标题叠在一起怎么办？</summary>
         <div class="faq-body">
